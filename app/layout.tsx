@@ -6,8 +6,8 @@ import { Providers } from './providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Fuji X Photo Gallery',
-  description: 'A Web3-enabled photo gallery',
+  title: 'Dexter X Zo',
+  description: 'An exclusive photo gallery for the founders of zo world',
 }
 
 export default function RootLayout({

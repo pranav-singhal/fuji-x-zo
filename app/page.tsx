@@ -1,14 +1,13 @@
 'use client'
 
+import { PhotoGallery } from "@/components/PhotoGallery"
+import { getPhotos } from "@/utils/supabase"
 import { ConnectKitButton } from "connectkit"
-import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useAccount, useReadContract } from "wagmi"
-import { getPhotos } from "../utils/supabase"
 
 const NFT_CONTRACT_ADDRESS = "0xF9e631014Ce1759d9B76Ce074D496c3da633BA12"
 
-// ERC721 ABI with more complete interface
 const ERC721_ABI = [
   {
     "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }],
@@ -87,7 +86,6 @@ export default function Home() {
         setIsLoadingPhotos(true)
         try {
           const photosList = await getPhotos()
-          console.log({ photosList })
           setPhotos(photosList)
         } catch (error) {
           console.error('Error loading photos:', error)
@@ -140,42 +138,11 @@ export default function Home() {
     <main className="min-h-screen p-8 bg-gradient-to-b from-zinc-900 to-black text-white">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-12">
-          <h1 className="text-3xl font-bold">Photo Gallery</h1>
+          <h1 className="text-3xl font-bold">Fuji X Photo Gallery</h1>
           <ConnectKitButton />
         </div>
 
-        {isLoadingPhotos ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="aspect-square bg-zinc-800 rounded-lg animate-pulse"
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {photos.map((photo) => (
-              <div
-                key={photo.name}
-                className="aspect-square bg-zinc-800 rounded-lg relative overflow-hidden group hover:ring-2 hover:ring-white/50 transition-all duration-300"
-              >
-                <Image
-                  src={photo.url}
-                  alt={photo.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-white text-lg font-medium truncate">{photo.name}</h3>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <PhotoGallery photos={photos} isLoading={isLoadingPhotos} />
       </div>
     </main>
   )
