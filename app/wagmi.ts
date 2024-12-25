@@ -1,4 +1,4 @@
-import { http, cookieStorage, createConfig, createStorage } from 'wagmi'
+import { cookieStorage, createConfig, createStorage, http } from 'wagmi'
 import { mainnet, sepolia } from 'wagmi/chains'
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors'
 
@@ -8,6 +8,7 @@ export function getConfig() {
     connectors: [
       injected(),
       coinbaseWallet(),
+      // @ts-ignore
       walletConnect({ projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID }),
     ],
     storage: createStorage({
