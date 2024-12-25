@@ -12,7 +12,7 @@ const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID 
 
 const config = createConfig(
   getDefaultConfig({
-    appName: "Fuji X Photo Gallery",
+    appName: "Fuji X Zo Gallery",
     walletConnectProjectId,
     chains: [mainnet],
     transports: {

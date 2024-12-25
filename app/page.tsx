@@ -102,7 +102,7 @@ export default function Home() {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gradient-to-b from-zinc-900 to-black text-white">
         <div className="text-center max-w-2xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">Welcome to Fuji X Photo Gallery</h1>
+          <h1 className="text-4xl font-bold mb-8">Welcome to Fuji X Zo</h1>
           <p className="text-lg mb-8 text-zinc-300">Connect your wallet to view the exclusive photo collection</p>
           <ConnectKitButton />
         </div>
@@ -126,8 +126,7 @@ export default function Home() {
       <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gradient-to-b from-zinc-900 to-black text-white">
         <div className="text-center max-w-2xl mx-auto">
           <h1 className="text-4xl font-bold mb-8">Access Required</h1>
-          <p className="text-lg mb-4 text-zinc-300">You need to own an NFT from our collection to view the gallery</p>
-          <p className="text-sm text-zinc-500 mb-8">Contract: {NFT_CONTRACT_ADDRESS}</p>
+          <p className="text-lg mb-4 text-zinc-300">You need to be a zo house funder to view the gallery</p>
           <ConnectKitButton />
         </div>
       </main>
@@ -138,7 +137,7 @@ export default function Home() {
     <main className="min-h-screen p-8 bg-gradient-to-b from-zinc-900 to-black text-white">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-12">
-          <h1 className="text-3xl font-bold">Fuji X Photo Gallery</h1>
+          <h1 className="text-3xl font-bold">Fuji X Zo Gallery</h1>
           <ConnectKitButton />
         </div>
 
