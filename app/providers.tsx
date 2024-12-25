@@ -23,6 +23,7 @@ const config = createConfig(
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
+    // @ts-ignore
     <WagmiConfig config={config}>
       <QueryClientProvider client={queryClient}>
         <ConnectKitProvider>
