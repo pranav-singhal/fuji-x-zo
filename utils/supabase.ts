@@ -10,40 +10,54 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export async function getPhotos() {
+    try {
+        let allFiles: any[] = []
+        let offset = 0
+        const limit = 1000 // Maximum allowed by Supabase per request
 
-
-
-    const { data: buckets, error: bucketsError } = await supabase
-        .storage
-        .listBuckets()
-
-    console.log({ buckets, bucketsError, supabaseUrl, supabaseAnonKey })
-
-    const { data: files, error } = await supabase
-        .storage
-        .from('fuji-x-photos-v1')
-        .list()
-
-    console.log({ files, error })
-
-    if (error) {
-        console.error('Error fetching photos:', error)
-        return []
-    }
-
-    console.log({ files })
-
-    return files
-        .filter(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i))
-        .map(file => {
-            const { data: { publicUrl } } = supabase
+        while (true) {
+            const { data: files, error } = await supabase
                 .storage
                 .from('fuji-x-photos-v1')
-                .getPublicUrl(file.name)
+                .list('', {
+                    limit: limit,
+                    offset: offset,
+                    sortBy: { column: 'name', order: 'asc' }
+                })
 
-            return {
-                name: file.name.replace(/\.[^/.]+$/, ''), // Remove file extension from display name
-                url: publicUrl
+            if (error) {
+                console.error('Error fetching photos:', error)
+                break
             }
-        })
+
+            if (!files || files.length === 0) {
+                break
+            }
+
+            allFiles = [...allFiles, ...files]
+
+            if (files.length < limit) {
+                break
+            }
+
+            offset += limit
+        }
+
+        return allFiles
+            .filter(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i))
+            .map(file => {
+                const { data: { publicUrl } } = supabase
+                    .storage
+                    .from('fuji-x-photos-v1')
+                    .getPublicUrl(file.name)
+
+                return {
+                    name: file.name.replace(/\.[^/.]+$/, ''), // Remove file extension from display name
+                    url: publicUrl
+                }
+            })
+    } catch (error) {
+        console.error('Error in getPhotos:', error)
+        return []
+    }
 } 
