@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import { useAccount, useReadContract } from "wagmi"
 
 const NFT_CONTRACT_ADDRESS = "0xF9e631014Ce1759d9B76Ce074D496c3da633BA12"
+const ADMIN_ADDRESS = process.env.NEXT_PUBLIC_ADMIN_ADDRESS
 
 const ERC721_ABI = [
   {
@@ -75,10 +76,12 @@ export default function Home() {
   useEffect(() => {
     if (balance && Number(balance) > 0) {
       setHasNFT(true)
+    } else if (address && ADMIN_ADDRESS && address.toLowerCase() === ADMIN_ADDRESS.toLowerCase()) {
+      setHasNFT(true)
     } else {
       setHasNFT(false)
     }
-  }, [balance])
+  }, [balance, address])
 
   useEffect(() => {
     async function loadPhotos() {
@@ -86,6 +89,7 @@ export default function Home() {
         setIsLoadingPhotos(true)
         try {
           const photosList = await getPhotos()
+          console.log({ photosList })
           setPhotos(photosList)
         } catch (error) {
           console.error('Error loading photos:', error)

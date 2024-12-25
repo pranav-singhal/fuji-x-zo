@@ -44,7 +44,7 @@ export async function getPhotos() {
         }
 
         return allFiles
-            .filter(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i))
+            .filter(file => file.name.match(/\.(jpg|jpeg|png|gif|HEIC)$/i))
             .map(file => {
                 const { data: { publicUrl } } = supabase
                     .storage
