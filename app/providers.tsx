@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ConnectKitProvider, getDefaultConfig } from 'connectkit'
 import { http } from 'viem'
-import { mainnet, sepolia } from 'viem/chains'
+import { mainnet } from 'viem/chains'
 import { createConfig, WagmiConfig } from 'wagmi'
 
 const queryClient = new QueryClient()
@@ -14,10 +14,9 @@ const config = createConfig(
   getDefaultConfig({
     appName: "Fuji X Photo Gallery",
     walletConnectProjectId,
-    chains: [mainnet, sepolia],
+    chains: [mainnet],
     transports: {
-      [mainnet.id]: http('https://eth.llamarpc.com'),
-      [sepolia.id]: http()
+      [mainnet.id]: http('https://eth.llamarpc.com')
     }
   })
 )

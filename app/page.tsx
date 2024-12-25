@@ -1,8 +1,10 @@
 'use client'
 
 import { ConnectKitButton } from "connectkit"
+import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useAccount, useReadContract } from "wagmi"
+import { getPhotos } from "../utils/supabase"
 
 const NFT_CONTRACT_ADDRESS = "0xF9e631014Ce1759d9B76Ce074D496c3da633BA12"
 
@@ -31,9 +33,16 @@ const ERC721_ABI = [
   }
 ] as const
 
+interface Photo {
+  name: string
+  url: string
+}
+
 export default function Home() {
   const { address, isConnected } = useAccount()
   const [hasNFT, setHasNFT] = useState<boolean>(false)
+  const [photos, setPhotos] = useState<Photo[]>([])
+  const [isLoadingPhotos, setIsLoadingPhotos] = useState(false)
 
   const { data: contractName } = useReadContract({
     address: NFT_CONTRACT_ADDRESS as `0x${string}`,
@@ -71,6 +80,25 @@ export default function Home() {
       setHasNFT(false)
     }
   }, [balance])
+
+  useEffect(() => {
+    async function loadPhotos() {
+      if (hasNFT) {
+        setIsLoadingPhotos(true)
+        try {
+          const photosList = await getPhotos()
+          console.log({ photosList })
+          setPhotos(photosList)
+        } catch (error) {
+          console.error('Error loading photos:', error)
+        } finally {
+          setIsLoadingPhotos(false)
+        }
+      }
+    }
+
+    loadPhotos()
+  }, [hasNFT])
 
   if (!isConnected) {
     return (
@@ -116,17 +144,38 @@ export default function Home() {
           <ConnectKitButton />
         </div>
 
-        {/* Photo Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              className="aspect-square bg-zinc-800 rounded-lg animate-pulse relative overflow-hidden group hover:ring-2 hover:ring-white/50 transition-all duration-300"
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-          ))}
-        </div>
+        {isLoadingPhotos ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="aspect-square bg-zinc-800 rounded-lg animate-pulse"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {photos.map((photo) => (
+              <div
+                key={photo.name}
+                className="aspect-square bg-zinc-800 rounded-lg relative overflow-hidden group hover:ring-2 hover:ring-white/50 transition-all duration-300"
+              >
+                <Image
+                  src={photo.url}
+                  alt={photo.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-white text-lg font-medium truncate">{photo.name}</h3>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   )
